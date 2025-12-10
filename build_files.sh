@@ -1,4 +1,9 @@
 echo "Building the project..."
+echo "--- Debugging environment ---"
+echo "DATABASE_URL is: '$DATABASE_URL'"
+unset DATABASE_URL
+echo "DATABASE_URL is now: '$DATABASE_URL'"
+echo "--- End Debugging ---"
 python -m pip install -r requirements.txt
 
 echo "Collect Static..."
