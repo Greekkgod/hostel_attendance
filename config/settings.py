@@ -13,6 +13,7 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 from pathlib import Path
 import dj_database_url
 import os
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -21,12 +22,14 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/5.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-tnc#8&cr$6&_bmt#*4@!1fa(hekyf=@3v^wr!-f6l3r_dh9egw'
+SECRET_KEY = os.environ.get('SECRET_KEY', 'django-insecure-tnc#8&cr$6&_bmt#*4@!1fa(hekyf=@3v^wr!-f6l3r_dh9egw')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = os.environ.get('DEBUG', 'False') == 'True'
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['.vercel.app', '.now.sh', 'localhost', '127.0.0.1']
+if os.environ.get('ALLOWED_HOSTS'):
+    ALLOWED_HOSTS = os.environ.get('ALLOWED_HOSTS').split(',')
 
 
 # Application definition
@@ -82,10 +85,14 @@ DATABASES = {
     }
 }
 
-# If there is a DATABASE_URL environment variable (like on Vercel), use it
-database_url = os.environ.get("DATABASE_URL")
+# For Vercel deployment with Neon - use POSTGRES_URL or DATABASE_URL
+database_url = os.environ.get("POSTGRES_URL") or os.environ.get("DATABASE_URL")
 if database_url:
-    DATABASES["default"] = dj_database_url.parse(database_url)
+    DATABASES["default"] = dj_database_url.config(
+        default=database_url,
+        conn_max_age=600,
+        conn_health_checks=True,
+    )
 
 # Password validation
 # https://docs.djangoproject.com/en/5.2/ref/settings/#auth-password-validators
@@ -143,3 +150,11 @@ STATIC_ROOT = BASE_DIR / 'staticfiles_build'
 # This is usually a 'static' folder in your root project directory.
 MEDIA_URL = "/media/"
 MEDIA_ROOT = BASE_DIR / "media"
+
+# Security settings for production
+if not DEBUG:
+    SECURE_SSL_REDIRECT = True
+    SESSION_COOKIE_SECURE = True
+    CSRF_COOKIE_SECURE = True
+    SECURE_BROWSER_XSS_FILTER = True
+    SECURE_CONTENT_TYPE_NOSNIFF = True
