@@ -1,3 +1,4 @@
+{% load static %}
 <!doctype html>
 <html lang="en">
 <head>
@@ -22,9 +23,8 @@
     /* ---------- Navbar ---------- */
     nav {
       display: flex;
-      justify-content: center;
+      justify-content: space-between;
       align-items: center;
-      gap: 20px;
       padding: 18px 28px;
       background: rgba(255, 255, 255, 0.1);
       border-bottom: 1px solid rgba(255, 255, 255, 0.2);
@@ -35,6 +35,24 @@
       z-index: 100;
       border-radius: 0 0 20px 20px;
       animation: fadeDown 0.4s ease;
+    }
+
+    /* ---------- Logo Styling ---------- */
+    .nav-logo {
+      height: 45px;
+      width: auto;
+      transition: transform 0.3s ease;
+    }
+
+    .nav-logo:hover {
+      transform: scale(1.05);
+    }
+
+    /* ---------- Nav Links Container ---------- */
+    .nav-links {
+      display: flex;
+      gap: 20px;
+      align-items: center;
     }
 
     nav a {
@@ -108,14 +126,26 @@
     /* ---------- Responsive ---------- */
     @media (max-width: 640px) {
       nav {
-        flex-wrap: wrap;
-        gap: 10px;
+        flex-direction: column;
+        gap: 15px;
         border-radius: 0 0 15px 15px;
       }
+      
+      .nav-logo {
+        height: 35px;
+      }
+      
+      .nav-links {
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 10px;
+      }
+      
       nav a {
         font-size: 0.9rem;
         padding: 8px 12px;
       }
+      
       main {
         padding: 24px 14px;
         margin-top: 24px;
@@ -126,11 +156,15 @@
 
 <body>
   <nav>
-    <a href="{% url 'home' %}" class="{% if request.resolver_match.url_name == 'home' %}active{% endif %}">Home</a>
-    <a href="{% url 'check' %}" class="{% if request.resolver_match.url_name == 'check' %}active{% endif %}">Check</a>
-    <a href="{% url 'inside' %}" class="{% if request.resolver_match.url_name == 'inside' %}active{% endif %}">Inside</a>
-    <a href="{% url 'outside' %}" class="{% if request.resolver_match.url_name == 'outside' %}active{% endif %}">Outside</a>
-    <a href="{% url 'logs' %}" class="{% if request.resolver_match.url_name == 'logs' %}active{% endif %}">Logs</a>
+    <img src="{% static 'gate/logoW.png' %}" alt="GateCheck Logo" class="nav-logo">
+    
+    <div class="nav-links">
+      <a href="{% url 'home' %}" class="{% if request.resolver_match.url_name == 'home' %}active{% endif %}">Home</a>
+      <a href="{% url 'check' %}" class="{% if request.resolver_match.url_name == 'check' %}active{% endif %}">Check</a>
+      <a href="{% url 'inside' %}" class="{% if request.resolver_match.url_name == 'inside' %}active{% endif %}">Inside</a>
+      <a href="{% url 'outside' %}" class="{% if request.resolver_match.url_name == 'outside' %}active{% endif %}">Outside</a>
+      <a href="{% url 'logs' %}" class="{% if request.resolver_match.url_name == 'logs' %}active{% endif %}">Logs</a>
+    </div>
   </nav>
 
   <main>
